@@ -11,7 +11,7 @@ from torch import autocast, inference_mode
 from ddm_inversion.ddim_inversion import ddim_inversion
 
 import calendar
-import time
+import time, torch
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -31,8 +31,8 @@ if __name__ == "__main__":
 
     # create scheduler
     # load diffusion model
-    model_id = "CompVis/stable-diffusion-v1-4"
-    # model_id = "stable_diff_local" # load local save of model (for internet problems)
+    # model_id = "CompVis/stable-diffusion-v1-4"
+    model_id = "/home/yue/Deep_Learning/Fast_Validation/VQ_VAE_GAN_Diffusion/SD_pretrained/Base_model/CompVis_stable-diffusion-v1-4" # load local save of model (for internet problems)
 
     device = f"cuda:{args.device_num}"
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     time_stamp = calendar.timegm(current_GMT)
 
     # load/reload model:
-    ldm_stable = StableDiffusionPipeline.from_pretrained(model_id).to(device)
+    ldm_stable = StableDiffusionPipeline.from_pretrained(model_id,torch_dtype=torch.float16).to(device)
 
     for i in range(len(full_data)):
         current_image_data = full_data[i]

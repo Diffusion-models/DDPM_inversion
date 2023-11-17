@@ -40,5 +40,6 @@ def ddim_loop(model, w0, prompt, cfg_scale):
 
 @torch.no_grad()
 def ddim_inversion(model, w0, prompt, cfg_scale):
-    wT = ddim_loop(model, w0, prompt, cfg_scale)
+    with torch.autocast("cuda"):    # support fp16 mix-percise
+        wT = ddim_loop(model, w0, prompt, cfg_scale)
     return wT

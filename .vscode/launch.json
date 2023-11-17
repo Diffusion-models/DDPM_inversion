@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "debug: ddim_inv",
+            "type": "python",
+            "request": "launch",
+            "program": "main_run.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--mode","ddim", "--dataset_yaml", "test.yaml","--skip", "0", "--cfg_tar", "10", "--cfg_src", "0"]
+        },
+        {
+            "name": "debug: our_inv",
+            "type": "python",
+            "request": "launch",
+            "program": "main_run.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--mode","our_inv", "--dataset_yaml", "test.yaml","--skip", "36", "--cfg_tar", "3.5"]
+        }
+    ]
+}

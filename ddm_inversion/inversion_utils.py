@@ -40,13 +40,13 @@ def sample_xts_from_x0(model, x0, num_inference_steps=50):
     betas = 1 - alphas
     variance_noise_shape = (
             num_inference_steps,
-            model.unet.in_channels, 
+            model.unet.config.in_channels, 
             model.unet.sample_size,
             model.unet.sample_size)
     
     timesteps = model.scheduler.timesteps.to(model.device)
     t_to_idx = {int(v):k for k,v in enumerate(timesteps)}
-    xts = torch.zeros((num_inference_steps+1,model.unet.in_channels, model.unet.sample_size, model.unet.sample_size)).to(x0.device)
+    xts = torch.zeros((num_inference_steps+1,model.unet.config.in_channels, model.unet.sample_size, model.unet.sample_size)).to(x0.device)
     xts[0] = x0
     for t in reversed(timesteps):
         idx = num_inference_steps-t_to_idx[int(t)]
@@ -98,6 +98,7 @@ def get_variance(model, timestep): #, prev_timestep):
     variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
     return variance
 
+@torch.autocast("cuda")     # add support fp16 mix-percise
 def inversion_forward_process(model, x0, 
                             etas = None,    
                             prog_bar = False,
@@ -111,7 +112,7 @@ def inversion_forward_process(model, x0,
     timesteps = model.scheduler.timesteps.to(model.device)
     variance_noise_shape = (
         num_inference_steps,
-        model.unet.in_channels, 
+        model.unet.config.in_channels, 
         model.unet.sample_size,
         model.unet.sample_size)
     if etas is None or (type(etas) in [int, float] and etas == 0):
@@ -209,6 +210,7 @@ def reverse_step(model, model_output, timestep, sample, eta = 0, variance_noise=
 
     return prev_sample
 
+@torch.autocast("cuda")     # add support fp16 mix-percise
 def inversion_reverse_process(model,
                     xT, 
                     etas = 0,
